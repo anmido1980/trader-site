@@ -15,15 +15,15 @@ const widgetsHtml = items
     const config = JSON.stringify({
       symbol: item.symbol,
       width: '100%',
-      height: 120,
+      height: 160,
       locale: 'ru',
       dateRange: '1M',
       colorTheme: 'dark',
       trendLineColor: 'rgba(41, 98, 255, 1)',
       underLineColor: 'rgba(41, 98, 255, 0.1)',
       underLineBottomColor: 'rgba(41, 98, 255, 0)',
-      isTransparent: true,
-      autosize: true,
+      isTransparent: false,
+      autosize: false,
       largeChartUrl: '',
     });
 
@@ -117,7 +117,16 @@ ${config}
   }
 
   .tradingview-widget-container {
-    min-height: 120px;
+    min-height: 160px;
+    background: #131722;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .tradingview-widget-container iframe {
+    display: block;
+    width: 100% !important;
+    height: 160px !important;
   }
 
   .tradingview-widget-copyright {
