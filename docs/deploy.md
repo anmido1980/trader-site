@@ -88,11 +88,57 @@ jobs:
 **Плюсы:** Автодеплой, Edge-функции если понадобятся, превью-деплой для PR.
 **Минусы:** Коммерческий — условия могут меняться.
 
-**Настройка:**
-1. Подключить репозиторий на vercel.com
-2. Framework preset: Astro (автоопределение)
-3. Build command: `npm run build`
-4. Output directory: `dist`
+**Текущая настройка проекта:**
+- Фреймворк: Astro 5
+- Адаптер: `@astrojs/vercel@9.0.5`
+- Режим вывода: `server` (SSR + возможность добавлять API/формы)
+- Сборка: `npm run build`
+- Папка сборки: управляется адаптером (`.vercel/output`)
+
+**Пошаговая настройка:**
+
+1. **Подготовить локально**
+   ```bash
+   npm install
+   npm run check
+   npm run build
+   ```
+
+2. **Создать репозиторий на GitHub**
+   - Название: например `trader-site`.
+   - Не добавлять README/.gitignore — они уже в проекте.
+   - Скопировать URL репозитория.
+
+3. **Запушить код**
+   ```bash
+   git remote add origin https://github.com/<USERNAME>/<REPO>.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+4. **Импортировать в Vercel**
+   - Открыть [vercel.com](https://vercel.com) → «Add New... → Project».
+   - Выбрать GitHub-репозиторий.
+   - Framework Preset: **Astro** (определяется автоматически).
+   - Root Directory: оставить `/` (если репозиторий содержит только сайт).
+   - Build Command: `npm run build`.
+   - Output Directory: оставить пустым (управляется адаптером).
+   - Нажать **Deploy**.
+
+5. **Подключить свой домен**
+   - В проекте Vercel открыть вкладку **Domains**.
+   - Ввести домен, например `example.com`, и нажать **Add**.
+   - Vercel покажет требуемые DNS-записи:
+     - Для корневого домена (`@`) — запись типа `A`.
+     - Для `www` — запись типа `CNAME`.
+   - Добавить эти записи у регистратора домена.
+   - Дождаться propagated DNS (обычно до 24 часов, часто быстрее).
+   - В Vercel SSL-сертификат выдаётся автоматически.
+
+**Последующие обновления:**
+- Любой `git push` в `main` запускает автодеплой.
+- Pull Request получает собственный превью-URL.
+- Обновлять данные: менять JSON в `src/data/` → `git commit` → `git push`.
 
 ---
 

@@ -23,5 +23,11 @@ pnpm-debug.log*
 .vscode/
 .idea/
 
-# Claude local settings
-.claude/settings.local.json
+# Claude / agent artifacts
+.agents/
+.claude/
+.mcp.json
+skills-lock.json
+
+# Temporary root files
+2026-06-21_*
