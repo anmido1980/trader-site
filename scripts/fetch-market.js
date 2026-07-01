@@ -126,6 +126,15 @@ async function run() {
       if (['GLDRUB_TOM', 'PLDRUB_TOM'].includes(item.secid) && item.priceValue != null) {
         item.priceUsd = `$${fmt(item.priceValue / usdRate, 2)}`;
       }
+      if (item.secid === 'GLDRUB_TOM') {
+        const TROY_OZ_GRAMS = 31.1034768;
+        const usdPerOz = item.priceValue / usdRate * TROY_OZ_GRAMS;
+        item.priceUsd = `$${fmt(usdPerOz, 2)}`;
+        item.priceUsdUnit = 'за тр. унцию';
+        if (item.history.length > 0) {
+          item.historyUsd = item.history.map((v) => Number((v / usdRate * TROY_OZ_GRAMS).toFixed(2)));
+        }
+      }
     }
   }
 

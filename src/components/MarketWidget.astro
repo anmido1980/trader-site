@@ -43,7 +43,10 @@ const updatedAt = date.toLocaleString('ru-RU', {
                 <td class="market-table__num market-table__price">
                   <div>{item.price}</div>
                   {item.priceUsd && (
-                    <div class="market-table__usd">{item.priceUsd}</div>
+                    <div class="market-table__usd">
+                      {item.priceUsd}
+                      {item.priceUsdUnit && <span class="market-table__unit"> {item.priceUsdUnit}</span>}
+                    </div>
                   )}
                 </td>
                 <td class={`market-table__num ${positive ? 'delta-up' : 'delta-down'}`}>
@@ -60,7 +63,7 @@ const updatedAt = date.toLocaleString('ru-RU', {
                       aria-hidden="true"
                     >
                       <path
-                        d={sparkline(item.history, 120, 32)}
+                        d={sparkline(item.historyUsd ?? item.history, 120, 32)}
                         fill="none"
                         stroke={positive ? 'var(--color-positive)' : 'var(--color-negative)'}
                         stroke-width="1.5"
@@ -197,6 +200,10 @@ const updatedAt = date.toLocaleString('ru-RU', {
     color: var(--color-text-muted);
     font-weight: 400;
     margin-top: 2px;
+  }
+
+  .market-table__unit {
+    color: var(--color-text-muted);
   }
 
   .market-table__chart {

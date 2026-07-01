@@ -1,0 +1,237 @@
+---
+import Sidebar from './Sidebar.astro';
+import MarketWidget from './MarketWidget.astro';
+---
+
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero__layout">
+      <Sidebar />
+
+      <div class="hero__main">
+        <div class="hero__head" data-reveal-fade>
+          <span class="eyebrow">// Портфельный инвестор · Канал</span>
+        </div>
+
+        <h1 class="hero__title" data-reveal>
+          Портфельные инвестиции — <span class="hero__title-em">это легко</span>
+        </h1>
+
+        <p class="hero__lead" data-reveal>
+          Здесь вы найдёте обзоры финансовых инструментов, материалы о
+          формировании портфеля и приёмы, помогающие увеличить доходность вложений.
+        </p>
+
+        <figure class="hero__media" data-reveal>
+          <img
+            src="/images/2026-07-01_trading-humor_hero.webp"
+            alt="Юмористическая иллюстрация: трейдер за шестью мониторами, а кот на клавиатуре нажимает SELL"
+            width="1024"
+            height="576"
+            loading="eager"
+          />
+          <figcaption>Когда кот на клавиатуре знает рынок лучше тебя</figcaption>
+        </figure>
+
+        <!-- Market Monitor -->
+        <MarketWidget />
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: var(--space-5) 0 var(--space-7);
+    background: var(--color-bg-page);
+  }
+
+  .hero__layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .hero__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .hero__head {
+    padding: 0 4px;
+  }
+
+  .hero__title {
+    font-size: clamp(1.875rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.15;
+    margin: 0;
+    padding: 4px;
+  }
+
+  .hero__title-em {
+    color: var(--color-accent);
+  }
+
+  .hero__lead {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    max-width: 760px;
+    padding: 0 4px;
+    margin-top: -2px;
+  }
+
+  .hero__media {
+    margin: var(--space-3) 0 var(--space-2);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .hero__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hero__media figcaption {
+    padding: 8px 12px;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    background: var(--color-bg-panel);
+    text-align: center;
+  }
+
+  /* Monitor table */
+  .monitor {
+    margin-top: var(--space-2);
+  }
+
+  .monitor__filters {
+    display: flex;
+    gap: 2px;
+  }
+
+  .monitor__filters .btn.is-active {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent-dark);
+  }
+
+  .panel__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 10px 16px;
+    border-top: 1px solid var(--color-border-light);
+    background: var(--color-bg-panel-alt);
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+  }
+
+  .panel__foot-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* Table */
+  .m-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+  }
+
+  .m-table thead th {
+    text-align: right;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-panel-alt);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border-light);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .m-table thead th.m-table__name { text-align: left; }
+  .m-table thead th.m-table__chart { text-align: center; width: 130px; }
+
+  .m-table tbody tr {
+    transition: background var(--t-fast);
+  }
+  .m-table tbody tr:hover {
+    background: var(--color-bg-row-hover);
+  }
+
+  .m-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border-light);
+    text-align: right;
+    vertical-align: middle;
+  }
+  .m-table tbody tr:last-child td { border-bottom: none; }
+
+  .m-table__name {
+    text-align: left !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .m-table__id {
+    color: var(--color-text-faint);
+    font-weight: 700;
+    font-size: var(--font-size-xs);
+    width: 22px;
+    flex-shrink: 0;
+  }
+  .m-table__title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .m-table__group {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: 1px;
+  }
+  .m-table__chart {
+    text-align: center !important;
+  }
+  .sparkline {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @media (max-width: 900px) {
+    .hero__layout {
+      grid-template-columns: 1fr;
+    }
+    .m-table thead th.m-table__chart,
+    .m-table tbody td.m-table__chart {
+      display: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .m-table thead th:nth-child(2),
+    .m-table tbody td:nth-child(2),
+    .m-table thead th:nth-child(3),
+    .m-table tbody td:nth-child(3),
+    .m-table thead th:nth-child(7),
+    .m-table tbody td:nth-child(7) {
+      display: none;
+    }
+    .monitor__filters .btn:nth-child(n+4) {
+      display: none;
+    }
+    .panel__foot {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
