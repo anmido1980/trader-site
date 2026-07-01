@@ -1,0 +1,84 @@
+---
+import '../styles/global.css';
+import '../styles/animations.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Портфельный инвестор — обзоры, стратегии, разборы',
+  description = 'Канал о портфельных инвестициях: обзоры финансовых инструментов, формирование портфеля, приёмы увеличения доходности.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1f5fa8" />
+    <meta name="description" content={description} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="ru_RU" />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Перейти к содержимому</a>
+
+    <slot />
+
+    <script>
+      import { initAnimations } from '../scripts/animations';
+
+      const prefersReducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+
+      // Anchor smooth scroll (native, no Lenis — PortfolioVisualizer is a utility tool, not a marketing splash)
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href');
+          if (!id || id === '#') return;
+          const target = document.querySelector(id);
+          if (!target) return;
+          e.preventDefault();
+          (target as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      if (prefersReducedMotion) {
+        document
+          .querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-fade]')
+          .forEach((el) => {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          });
+      } else {
+        initAnimations();
+      }
+    </script>
+
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -100px;
+        left: 16px;
+        padding: 8px 16px;
+        background: var(--color-accent);
+        color: #fff;
+        font-weight: 700;
+        z-index: 1000;
+        transition: top var(--t-base);
+      }
+      .skip-link:focus { top: 16px; }
+    </style>
+  </body>
+</html>

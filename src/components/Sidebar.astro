@@ -1,0 +1,143 @@
+---
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+
+const groups = [
+  {
+    title: 'Темы канала',
+    items: [
+      { id: 'topics', href: '#topics', label: 'Обзор финансовых инструментов' },
+      { id: 'allocation', href: '#allocation', label: 'Формирование портфеля' },
+      { id: 'yield', href: '#yield', label: 'Приёмы доходности' },
+    ],
+  },
+  {
+    title: 'Рубрики',
+    items: [
+      { id: 'basics', href: '#basics', label: 'Азы инвестирования' },
+      { id: 'portfolio', href: '#portfolio', label: 'Инвестиционный портфель' },
+    ],
+  },
+  {
+    title: 'Аналитика',
+    items: [
+      { id: 'monitor', href: '#monitor', label: 'Монитор рубрик' },
+      { id: 'tools', href: '#tools', label: 'Инструменты' },
+    ],
+  },
+];
+---
+
+<aside class="sidebar" aria-label="Боковая навигация">
+  {groups.map((group) => (
+    <section class="sidebar__group panel">
+      <header class="panel__head">
+        <h3>{group.title}</h3>
+      </header>
+      <ul class="sidebar__list">
+        {group.items.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class={`sidebar__link ${current === item.id ? 'is-current' : ''}`}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <section class="sidebar__group panel">
+    <header class="panel__head">
+      <h3>Статистика канала</h3>
+    </header>
+    <div class="sidebar__stats">
+      <div class="sidebar__stat">
+        <span class="sidebar__stat-num num">62</span>
+        <span class="sidebar__stat-label">материала</span>
+      </div>
+      <div class="sidebar__stat">
+        <span class="sidebar__stat-num num">14 820</span>
+        <span class="sidebar__stat-label">подписчиков</span>
+      </div>
+      <div class="sidebar__stat">
+        <span class="sidebar__stat-num num">4.9 / 5</span>
+        <span class="sidebar__stat-label">оценка</span>
+      </div>
+    </div>
+  </section>
+</aside>
+
+<style>
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .sidebar__list {
+    padding: 6px 0;
+  }
+
+  .sidebar__link {
+    display: block;
+    padding: 8px 16px;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    border-left: 3px solid transparent;
+    transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+  }
+
+  .sidebar__link:hover {
+    background: var(--color-bg-row-hover);
+    color: var(--color-accent);
+    text-decoration: none;
+    border-left-color: var(--color-border);
+  }
+
+  .sidebar__link.is-current {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .sidebar__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--color-border-light);
+  }
+
+  .sidebar__stat {
+    padding: 14px 8px;
+    background: var(--color-bg-panel);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .sidebar__stat-num {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  .sidebar__stat-label {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 900px) {
+    .sidebar__stats {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+</style>

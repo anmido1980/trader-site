@@ -1,0 +1,323 @@
+---
+import Sidebar from './Sidebar.astro';
+import { sparkline } from '../utils/sparkline';
+---
+
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero__layout">
+      <Sidebar />
+
+      <div class="hero__main">
+        <div class="hero__head" data-reveal-fade>
+          <span class="eyebrow">// Портфельный инвестор · Канал</span>
+        </div>
+
+        <h1 class="hero__title" data-reveal>
+          Портфельные инвестиции — <span class="hero__title-em">это легко</span>
+        </h1>
+
+        <p class="hero__lead" data-reveal>
+          Здесь вы найдёте обзоры финансовых инструментов, материалы о
+          формировании портфеля и приёмы, помогающие увеличить доходность вложений.
+        </p>
+
+        <!-- Market Monitor-style table -->
+        <section class="panel monitor" id="monitor" data-reveal>
+          <header class="panel__head">
+            <h2>
+              <span class="live-dot" aria-hidden="true"></span>
+              &nbsp;Монитор рубрик · 12 месяцев
+            </h2>
+            <div class="monitor__filters">
+              <button class="btn btn--sm is-active">1M</button>
+              <button class="btn btn--sm">3M</button>
+              <button class="btn btn--sm">6M</button>
+              <button class="btn btn--sm">YTD</button>
+              <button class="btn btn--sm">1Y</button>
+              <button class="btn btn--sm">All</button>
+            </div>
+          </header>
+
+          <div class="panel__body panel__body--flush">
+            <table class="m-table" aria-label="Динамика рубрик канала">
+              <thead>
+                <tr>
+                  <th class="m-table__name">Рубрика / Тема</th>
+                  <th class="m-table__num">Материалов</th>
+                  <th class="m-table__num">Подп.</th>
+                  <th class="m-table__num">6M</th>
+                  <th class="m-table__num">YTD</th>
+                  <th class="m-table__num">1Y</th>
+                  <th class="m-table__num">Макс. DD</th>
+                  <th class="m-table__chart">Тренд</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { id: '01', name: 'Акции РФ — голубые фишки', group: 'Акции', mat: 18, subs: '5 240', val: 18.4, ytd: 24.6, yr: 31.2, dd: -8.1, trend: [10,12,11,14,13,15,17,16,19,18,20,22] },
+                  { id: '02', name: 'ОФЗ и корпоративные облигации', group: 'Облигации', mat: 14, subs: '4 180', val: 6.2, ytd: 11.8, yr: 14.5, dd: -2.3, trend: [8,8.5,9,9,9.4,10,10.2,10.5,10.8,11,11.4,12] },
+                  { id: '03', name: 'Фьючерсы на ММВБ (Si, BR, RI)', group: 'Деривативы', mat: 11, subs: '3 920', val: -3.1, ytd: 9.4, yr: 17.8, dd: -14.6, trend: [14,15,12,10,11,8,9,11,13,12,14,16] },
+                  { id: '04', name: 'Опционы — базовые стратегии', group: 'Деривативы', mat: 7, subs: '2 310', val: 4.7, ytd: 8.1, yr: 12.3, dd: -7.4, trend: [8,9,9.5,10,10.2,11,11.5,12,11.8,12.2,12.5,13] },
+                  { id: '05', name: 'ETF и биржевые фонды', group: 'Фонды', mat: 6, subs: '1 880', val: 2.1, ytd: 5.6, yr: 9.2, dd: -5.8, trend: [6,6.5,7,7,7.5,8,8,8.5,8.7,9,9.1,9.4] },
+                  { id: '06', name: 'Дивидендные идеи — США/ЕС', group: 'Зарубежные', mat: 6, subs: '2 040', val: 5.3, ytd: 7.8, yr: 11.4, dd: -4.2, trend: [7,7.5,8,8,8.5,9,9,9.5,9.8,10,10.3,10.8] },
+                ].map((row) => {
+                  const fmt = (n: number) => (n >= 0 ? '+' : '') + n.toFixed(1) + '%';
+                  return (
+                    <tr>
+                      <td class="m-table__name">
+                        <span class="m-table__id num">{row.id}</span>
+                        <div>
+                          <div class="m-table__title">{row.name}</div>
+                          <div class="m-table__group">{row.group}</div>
+                        </div>
+                      </td>
+                      <td class="m-table__num num">{row.mat}</td>
+                      <td class="m-table__num num">{row.subs}</td>
+                      <td class={`m-table__num num ${row.val >= 0 ? 'delta-up' : 'delta-down'}`}>
+                        {fmt(row.val)}
+                      </td>
+                      <td class={`m-table__num num ${row.ytd >= 0 ? 'delta-up' : 'delta-down'}`}>
+                        {fmt(row.ytd)}
+                      </td>
+                      <td class={`m-table__num num ${row.yr >= 0 ? 'delta-up' : 'delta-down'}`}>
+                        {fmt(row.yr)}
+                      </td>
+                      <td class="m-table__num num delta-down">{fmt(row.dd)}</td>
+                      <td class="m-table__chart">
+                        <svg viewBox="0 0 120 32" width="120" height="32" class="sparkline" preserveAspectRatio="none" aria-hidden="true">
+                          <path d={sparkline(row.trend, 120, 32)} fill="none" stroke={row.yr >= 0 ? 'var(--color-positive)' : 'var(--color-negative)'} stroke-width="1.5"/>
+                        </svg>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <footer class="panel__foot">
+            <span class="panel__foot-text">
+              Данные обновляются ежемесячно · Методика расчёта доходности
+              <a href="#about">доступна в описании</a>
+            </span>
+            <a href="#topics" class="btn btn--sm">Смотреть все рубрики →</a>
+          </footer>
+        </section>
+
+        <!-- Quick chips with hero content list -->
+        <ul class="hero__chips" data-reveal>
+          {[
+            'Обзор разных видов финансовых инструментов',
+            'Формирование портфеля инвестиций',
+            'Приёмы, помогающие увеличить доходность вложений',
+          ].map((t) => (
+            <li class="hero__chip">
+              <span class="hero__chip-bullet" aria-hidden="true">▸</span>
+              {t}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: var(--space-5) 0 var(--space-7);
+    background: var(--color-bg-page);
+  }
+
+  .hero__layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .hero__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .hero__head {
+    padding: 0 4px;
+  }
+
+  .hero__title {
+    font-size: clamp(1.875rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.15;
+    margin: 0;
+    padding: 4px;
+  }
+
+  .hero__title-em {
+    color: var(--color-accent);
+  }
+
+  .hero__lead {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    max-width: 760px;
+    padding: 0 4px;
+    margin-top: -2px;
+  }
+
+  /* Monitor table */
+  .monitor {
+    margin-top: var(--space-2);
+  }
+
+  .monitor__filters {
+    display: flex;
+    gap: 2px;
+  }
+
+  .monitor__filters .btn.is-active {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent-dark);
+  }
+
+  .panel__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 10px 16px;
+    border-top: 1px solid var(--color-border-light);
+    background: var(--color-bg-panel-alt);
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+  }
+
+  .panel__foot-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  /* Table */
+  .m-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+  }
+
+  .m-table thead th {
+    text-align: right;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-panel-alt);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border-light);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .m-table thead th.m-table__name { text-align: left; }
+  .m-table thead th.m-table__chart { text-align: center; width: 130px; }
+
+  .m-table tbody tr {
+    transition: background var(--t-fast);
+  }
+  .m-table tbody tr:hover {
+    background: var(--color-bg-row-hover);
+  }
+
+  .m-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border-light);
+    text-align: right;
+    vertical-align: middle;
+  }
+  .m-table tbody tr:last-child td { border-bottom: none; }
+
+  .m-table__name {
+    text-align: left !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .m-table__id {
+    color: var(--color-text-faint);
+    font-weight: 700;
+    font-size: var(--font-size-xs);
+    width: 22px;
+    flex-shrink: 0;
+  }
+  .m-table__title {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+  .m-table__group {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: 1px;
+  }
+  .m-table__chart {
+    text-align: center !important;
+  }
+  .sparkline {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Chips */
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-2) 4px 0;
+  }
+
+  .hero__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .hero__chip-bullet {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  @media (max-width: 900px) {
+    .hero__layout {
+      grid-template-columns: 1fr;
+    }
+    .m-table thead th.m-table__chart,
+    .m-table tbody td.m-table__chart {
+      display: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .m-table thead th:nth-child(2),
+    .m-table tbody td:nth-child(2),
+    .m-table thead th:nth-child(3),
+    .m-table tbody td:nth-child(3),
+    .m-table thead th:nth-child(7),
+    .m-table tbody td:nth-child(7) {
+      display: none;
+    }
+    .monitor__filters .btn:nth-child(n+4) {
+      display: none;
+    }
+    .panel__foot {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

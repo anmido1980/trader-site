@@ -1,0 +1,175 @@
+---
+import benefits from '../data/benefits.json';
+---
+
+<section class="topics" id="topics">
+  <div class="container">
+    <div class="topics__layout">
+      <div class="topics__side">
+        <span class="eyebrow">// 01 · Темы канала</span>
+        <h2 class="topics__title">Что вы найдёте на канале</h2>
+        <p class="topics__sub">
+          Три постоянных направления. Подписывайтесь на канал и получайте
+          материалы по каждому из них — без рекламы, без «сигналов», без
+          обещаний «гарантированной доходности».
+        </p>
+        <a href="#subscribe" class="btn btn--primary">Подписаться на обновления →</a>
+      </div>
+
+      <div class="topics__cards">
+        {benefits.items.map((item, i) => (
+          <article class="panel topic-card" id={item.tag} data-reveal>
+            <header class="panel__head">
+              <h3>
+                <span class="topic-card__num num">0{i + 1}</span>
+                {item.title}
+              </h3>
+              <span class="topic-card__tag">{item.tag}</span>
+            </header>
+            <div class="panel__body">
+              <p>{item.description}</p>
+            </div>
+            <footer class="topic-card__foot">
+              <span class="topic-card__stat">
+                <span class="num">{[18, 24, 20][i]}</span>
+                <span>материалов</span>
+              </span>
+              <span class="topic-card__stat">
+                <span class="num">{['8 мин', '11 мин', '9 мин'][i]}</span>
+                <span>ридинг</span>
+              </span>
+              <a href="#rubrics" class="topic-card__more">Подробнее →</a>
+            </footer>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .topics {
+    padding: var(--space-6) 0;
+    background: var(--color-bg-page);
+  }
+
+  .topics__layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .topics__side {
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-panel);
+    position: sticky;
+    top: calc(var(--header-h) + 12px);
+  }
+
+  .topics__title {
+    font-size: var(--font-size-2xl);
+    margin: var(--space-3) 0;
+    line-height: 1.2;
+  }
+
+  .topics__sub {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+  }
+
+  .topics__cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .topic-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topic-card .panel__head {
+    align-items: center;
+  }
+
+  .topic-card .panel__head h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: var(--font-size-md);
+  }
+
+  .topic-card__num {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .topic-card__tag {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    background: var(--color-bg-panel-alt);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+  }
+
+  .topic-card .panel__body {
+    flex: 1;
+  }
+
+  .topic-card .panel__body p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .topic-card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 12px 16px;
+    border-top: 1px solid var(--color-border-light);
+    background: var(--color-bg-panel-alt);
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+  }
+
+  .topic-card__stat {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+  .topic-card__stat .num {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .topic-card__more {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-link);
+  }
+
+  @media (max-width: 1000px) {
+    .topics__layout {
+      grid-template-columns: 1fr;
+    }
+    .topics__side {
+      position: static;
+    }
+    .topics__cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

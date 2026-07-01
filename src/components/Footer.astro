@@ -1,0 +1,141 @@
+---
+const year = new Date().getFullYear();
+const nav = [
+  { href: '#topics', label: 'Темы' },
+  { href: '#rubrics', label: 'Рубрики' },
+  { href: '#monitor', label: 'Монитор' },
+  { href: '#about', label: 'О канале' },
+];
+---
+
+<footer class="footer" id="about">
+  <div class="container">
+    <div class="footer__grid">
+      <section class="panel footer__about">
+        <header class="panel__head">
+          <h3>О канале</h3>
+        </header>
+        <div class="panel__body">
+          <p>
+            «Портфельный инвестор» — авторский канал о портфельных инвестициях.
+            Обзоры инструментов, стратегии аллокации, разборы реальных сделок.
+            Только проверенные подходы, без сигналов и обещаний.
+          </p>
+          <p style="margin-top: 8px; font-size: var(--font-size-xs); color: var(--color-text-muted);">
+            Ведёт: <a href="#">Антон</a> · частный инвестор с 2008 года.
+          </p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header class="panel__head">
+          <h3>Разделы</h3>
+        </header>
+        <div class="panel__body">
+          <ul class="footer__nav">
+            {nav.map((n) => (
+              <li><a href={n.href}>{n.label} →</a></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel" id="subscribe">
+        <header class="panel__head">
+          <h3>Подписаться</h3>
+        </header>
+        <div class="panel__body">
+          <p style="margin-bottom: 12px;">
+            Подпишитесь на канал и получайте материалы первыми.
+          </p>
+          <a href="https://t.me/" target="_blank" rel="noopener" class="btn btn--primary" style="width: 100%;">
+            Открыть в Telegram →
+          </a>
+          <p style="margin-top: 12px; font-size: var(--font-size-xs); color: var(--color-text-muted);">
+            Или напишите на
+            <a href="mailto:hello@portfolio-investor.ru">hello@portfolio-investor.ru</a>
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <div class="panel footer__disclaimer">
+      <header class="panel__head">
+        <h3>// Дисклеймер</h3>
+      </header>
+      <div class="panel__body">
+        <p>
+          Информация на канале носит ознакомительный характер и не является
+          индивидуальной инвестиционной рекомендацией. Инвестиции связаны с риском,
+          в том числе с риском потери вложенных средств. Доходность в прошлом
+          не определяет доходность в будущем. Перед принятием решений проконсультируйтесь
+          с лицензированным финансовым советником. Любые ссылки на доходность рубрик
+          приведены как иллюстрация активности канала, а не как прогноз.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© {year} Портфельный инвестор</span>
+      <span class="footer__sep">·</span>
+      <span>v1.0</span>
+      <span class="footer__sep">·</span>
+      <span>Сделано в Москве</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: var(--space-6) 0 var(--space-5);
+    background: var(--color-bg-page);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+
+  .footer__about p,
+  .footer__disclaimer p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+  }
+
+  .footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer__nav a {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+  }
+
+  .footer__disclaimer {
+    margin-bottom: var(--space-3);
+  }
+
+  .footer__bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    padding-top: var(--space-3);
+  }
+
+  .footer__sep {
+    color: var(--color-text-faint);
+  }
+
+  @media (max-width: 900px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
