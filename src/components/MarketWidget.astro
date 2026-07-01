@@ -23,40 +23,50 @@ const items = [
       items.map((item, idx) => (
         <div class="market-widget__card">
           <div class="market-widget__label">{item.label}</div>
-          <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container" data-symbol={item.symbol} data-container={`tv-widget-${idx}`}>
             <div id={`tv-widget-${idx}`} class="tradingview-widget-container__widget"></div>
             <div class="tradingview-widget-copyright">
               <a href={`https://www.tradingview.com/symbols/${item.symbol.replace(':', '-')}/`} rel="noopener" target="_blank">
                 <span class="blue-text">{item.label}</span>
               </a>
             </div>
-            <script
-              type="text/javascript"
-              src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js"
-              async
-            >
-              {JSON.stringify({
-                symbol: item.symbol,
-                width: '100%',
-                height: 120,
-                locale: 'ru',
-                dateRange: '1M',
-                colorTheme: 'dark',
-                trendLineColor: 'rgba(41, 98, 255, 1)',
-                underLineColor: 'rgba(41, 98, 255, 0.1)',
-                underLineBottomColor: 'rgba(41, 98, 255, 0)',
-                isTransparent: true,
-                autosize: true,
-                largeChartUrl: '',
-                container_id: `tv-widget-${idx}`,
-              })}
-            </script>
           </div>
         </div>
       ))
     }
   </div>
 </section>
+
+<script is:inline>
+  (function () {
+    const tv = window.TradingView;
+    if (!tv) return;
+
+    document.querySelectorAll('.tradingview-widget-container[data-symbol]').forEach((container) => {
+      const symbol = container.dataset.symbol;
+      const containerId = container.dataset.container;
+      if (!symbol || !containerId) return;
+
+      new tv.MiniSymbolOverviewWidget({
+        container_id: containerId,
+        symbol: symbol,
+        width: '100%',
+        height: 120,
+        locale: 'ru',
+        dateRange: '1M',
+        colorTheme: 'dark',
+        trendLineColor: 'rgba(41, 98, 255, 1)',
+        underLineColor: 'rgba(41, 98, 255, 0.1)',
+        underLineBottomColor: 'rgba(41, 98, 255, 0)',
+        isTransparent: true,
+        autosize: true,
+        largeChartUrl: '',
+      });
+    });
+  })();
+</script>
+
+<script is:inline src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async></script>
 
 <style>
   .market-widget {
