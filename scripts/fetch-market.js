@@ -100,6 +100,7 @@ async function run() {
         secid: s.secid,
         label: s.label,
         price: fmt(current?.last, s.decimals),
+        priceValue: current?.last ?? null,
         change: change != null ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}%` : '—',
         changeValue: change ?? 0,
         history,
@@ -110,10 +111,21 @@ async function run() {
         secid: s.secid,
         label: s.label,
         price: '—',
+        priceValue: null,
         change: '—',
         changeValue: 0,
         history: [],
       });
+    }
+  }
+
+  const usdItem = result.find((i) => i.secid === 'USD000UTSTOM');
+  const usdRate = parseFloat(String(usdItem?.priceValue ?? '').replace(/\s/g, '').replace(',', '.')) || null;
+  if (usdRate) {
+    for (const item of result) {
+      if (['GLDRUB_TOM', 'PLDRUB_TOM'].includes(item.secid) && item.priceValue != null) {
+        item.priceUsd = `$${fmt(item.priceValue / usdRate, 2)}`;
+      }
     }
   }
 

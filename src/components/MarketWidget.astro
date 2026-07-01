@@ -40,7 +40,12 @@ const updatedAt = date.toLocaleString('ru-RU', {
                   <span class="market-table__label">{item.label}</span>
                   <span class="market-table__secid">{item.secid}</span>
                 </td>
-                <td class="market-table__num market-table__price">{item.price}</td>
+                <td class="market-table__num market-table__price">
+                  <div>{item.price}</div>
+                  {item.priceUsd && (
+                    <div class="market-table__usd">{item.priceUsd}</div>
+                  )}
+                </td>
                 <td class={`market-table__num ${positive ? 'delta-up' : 'delta-down'}`}>
                   {item.change}
                 </td>
@@ -185,6 +190,13 @@ const updatedAt = date.toLocaleString('ru-RU', {
   .market-table__price {
     font-weight: 600;
     color: var(--color-text-primary);
+  }
+
+  .market-table__usd {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: 400;
+    margin-top: 2px;
   }
 
   .market-table__chart {
