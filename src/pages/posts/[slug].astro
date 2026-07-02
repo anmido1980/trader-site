@@ -18,6 +18,15 @@ const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
   month: 'long',
   year: 'numeric',
 });
+
+function renderContent(text: string) {
+  return text
+    .split('\n\n')
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, '<br />')}</p>`)
+    .join('\n');
+}
+
+const htmlContent = renderContent(post.content);
 ---
 
 <Layout
@@ -44,10 +53,13 @@ const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
       />
 
       <div class="post-page__body">
-        <p class="post-page__summary">{post.summary}</p>
-        <a href={post.url} target="_blank" rel="noopener" class="btn btn--primary">
-          Источник →
-        </a>
+        <div class="post-page__text" set:html={htmlContent} />
+
+        {post.url && (
+          <a href={post.url} target="_blank" rel="noopener" class="btn btn--primary">
+            Источник →
+          </a>
+        )}
       </div>
     </article>
   </main>
@@ -94,10 +106,16 @@ const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
     padding: var(--space-4);
     box-shadow: var(--shadow-panel);
   }
-  .post-page__summary {
+  .post-page__text {
     font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-    line-height: 1.6;
+    color: var(--color-text-primary);
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+  }
+  .post-page__text p {
     margin: 0 0 var(--space-3);
+  }
+  .post-page__text p:last-child {
+    margin-bottom: 0;
   }
 </style>

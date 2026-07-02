@@ -8,9 +8,11 @@
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
-    "fetch-market": "node scripts/fetch-market.js"
+    "fetch-market": "node scripts/fetch-market.js",
+    "convert-telegram": "node scripts/convert-telegram.js"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^5.0.0",
     "gsap": "^3.12.0",
