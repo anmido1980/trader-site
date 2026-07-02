@@ -30,8 +30,5 @@ pnpm-debug.log*
 skills-lock.json
 .playwright-mcp/
 
-# Telegram export source (contains raw data and media)
-telegram-export/
-
 # Temporary root files
 2026-06-21_*
