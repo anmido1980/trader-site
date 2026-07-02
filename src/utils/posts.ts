@@ -1,3 +1,8 @@
+export interface Source {
+  title: string;
+  url?: string;
+}
+
 export interface Post {
   slug: string;
   title: string;
@@ -7,6 +12,7 @@ export interface Post {
   summary: string;
   content: string;
   tags: string[];
+  sources?: Source[];
 }
 
 function parseDate(value: string): Date {
@@ -51,6 +57,7 @@ export async function getPosts(): Promise<Post[]> {
       summary,
       content: body,
       tags: data.tags ?? [],
+      sources: data.sources ?? [],
     });
   }
 

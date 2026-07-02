@@ -24,6 +24,31 @@ const htmlContent = await marked.parse(post.content, {
   gfm: true,
   breaks: false,
 });
+
+const headings: { level: number; text: string; id: string }[] = [];
+const headingRegex = /<h([2-3])[^>]*>(.*?)<\/h\1>/gi;
+let match: RegExpExecArray | null;
+while ((match = headingRegex.exec(htmlContent)) !== null) {
+  const level = Number(match[1]);
+  const text = match[2].replace(/<[^>]+>/g, '');
+  const id = text
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\-а-яё]/gi, '');
+  headings.push({ level, text, id });
+}
+
+const contentWithIds = htmlContent.replace(
+  /<h([2-3])[^>]*>(.*?)<\/h\1>/gi,
+  (_, level, inner) => {
+    const text = inner.replace(/<[^>]+>/g, '');
+    const id = text
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9\-а-яё]/gi, '');
+    return `<h${level} id="${id}">${inner}</h${level}>`;
+  },
+);
 ---
 
 <Layout
@@ -34,29 +59,73 @@ const htmlContent = await marked.parse(post.content, {
 >
   <Header />
   <main id="main" class="post-page">
-    <article class="container post-page__article">
-      <header class="post-page__head">
-        <time datetime={post.publishedAt}>{date}</time>
-        <h1>{post.title}</h1>
-      </header>
+    <article class="container post-page__grid">
+      <aside class="post-page__toc" aria-label="Содержание">
+        <nav class="toc">
+          <p class="toc__title">Содержание</p>
+          <ul class="toc__list">
+            {headings.map((h) => (
+              <li class={`toc__item toc__item--level-${h.level}`}>
+                <a href={`#${h.id}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
 
-      <img
-        src={post.image}
-        alt=""
-        width="1024"
-        height="576"
-        loading="eager"
-        class="post-page__image"
-      />
+      <div class="post-page__content">
+        <header class="post-page__head">
+          <div class="post-page__meta">
+            <a href="/posts/" class="post-page__back">← Все материалы</a>
+            <time datetime={post.publishedAt}>{date}</time>
+          </div>
+          <h1 class="post-page__title">{post.title}</h1>
+          {post.tags.length > 0 && (
+            <div class="post-page__tags">
+              {post.tags.map((tag) => (
+                <a href={`/tags/${tag}/`} class="post-page__tag">#{tag}</a>
+              ))}
+            </div>
+          )}
+        </header>
 
-      <div class="post-page__body">
-        <div class="post-page__text" set:html={htmlContent} />
+        <img
+          src={post.image}
+          alt=""
+          width="1024"
+          height="576"
+          loading="eager"
+          class="post-page__image"
+        />
 
-        {post.url && (
-          <a href={post.url} target="_blank" rel="noopener" class="btn btn--primary">
-            Источник →
-          </a>
-        )}
+        <div class="post-page__body">
+          <div class="post-page__text" set:html={contentWithIds} />
+
+          {post.sources && post.sources.length > 0 && (
+            <section class="post-page__sources">
+              <h2 id="istochniki">Источники</h2>
+              <ol>
+                {post.sources.map((source) => (
+                  <li>
+                    {source.url ? (
+                      <a href={source.url} target="_blank" rel="noopener">
+                        {source.title}
+                      </a>
+                    ) : (
+                      <span>{source.title}</span>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
+          {post.url && (
+            <a href={post.url} target="_blank" rel="noopener" class="btn btn--primary post-page__source-link">
+              Источник →
+            </a>
+          )}
+        </div>
       </div>
     </article>
   </main>
@@ -65,54 +134,210 @@ const htmlContent = await marked.parse(post.content, {
 
 <style>
   .post-page {
-    padding: var(--space-5) 0;
+    padding: var(--space-5) 0 var(--space-7);
     background: var(--color-bg-page);
     min-height: 60vh;
   }
-  .post-page__article {
-    max-width: 760px;
+  .post-page__grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-6);
+    align-items: start;
+  }
+  .post-page__toc {
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-4));
+  }
+  .toc {
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    box-shadow: var(--shadow-panel);
+  }
+  .toc__title {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    margin: 0 0 var(--space-3);
+  }
+  .toc__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .toc__item a {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    line-height: 1.4;
+  }
+  .toc__item a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+  .toc__item--level-3 {
+    padding-left: var(--space-3);
+  }
+  .toc__item--level-3 a {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+  .post-page__content {
+    min-width: 0;
   }
   .post-page__head {
     margin-bottom: var(--space-4);
   }
-  .post-page__head time {
-    display: block;
+  .post-page__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
     font-size: var(--font-size-xs);
     color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     margin-bottom: var(--space-2);
   }
-  .post-page__head h1 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    line-height: 1.15;
-    margin: 0;
+  .post-page__back {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .post-page__back:hover {
+    text-decoration: underline;
+  }
+  .post-page__title {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    margin: 0 0 var(--space-3);
+  }
+  .post-page__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .post-page__tag {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .post-page__tag:hover {
+    text-decoration: underline;
   }
   .post-page__image {
     width: 100%;
     height: auto;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--color-border-light);
     box-shadow: var(--shadow-panel);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-5);
   }
   .post-page__body {
     background: var(--color-bg-panel);
     border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
     box-shadow: var(--shadow-panel);
   }
   .post-page__text {
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
     color: var(--color-text-primary);
-    line-height: 1.7;
-    margin-bottom: var(--space-4);
+    line-height: 1.75;
   }
-  .post-page__text p {
-    margin: 0 0 var(--space-3);
+  .post-page__text :global(p) {
+    margin: 0 0 var(--space-4);
   }
-  .post-page__text p:last-child {
+  .post-page__text :global(p:last-child) {
     margin-bottom: 0;
+  }
+  .post-page__text :global(h2) {
+    font-size: var(--font-size-2xl);
+    margin: var(--space-6) 0 var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-accent-light);
+  }
+  .post-page__text :global(h3) {
+    font-size: var(--font-size-xl);
+    margin: var(--space-5) 0 var(--space-3);
+    color: var(--color-text-primary);
+  }
+  .post-page__text :global(ul),
+  .post-page__text :global(ol) {
+    margin: 0 0 var(--space-4);
+    padding-left: var(--space-5);
+  }
+  .post-page__text :global(ul) {
+    list-style: disc;
+  }
+  .post-page__text :global(ol) {
+    list-style: decimal;
+  }
+  .post-page__text :global(li) {
+    margin-bottom: var(--space-2);
+  }
+  .post-page__text :global(strong) {
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+  .post-page__text :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    margin: var(--space-4) 0 var(--space-5);
+  }
+  .post-page__text :global(th),
+  .post-page__text :global(td) {
+    padding: 10px 12px;
+    border: 1px solid var(--color-border-light);
+    text-align: left;
+    vertical-align: top;
+  }
+  .post-page__text :global(thead) {
+    background: var(--color-bg-panel-alt);
+  }
+  .post-page__text :global(th) {
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+  .post-page__text :global(tbody tr:nth-child(even)) {
+    background: var(--color-bg-stripe);
+  }
+  .post-page__sources {
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border-light);
+  }
+  .post-page__sources h2 {
+    font-size: var(--font-size-xl);
+    margin: 0 0 var(--space-3);
+    border-bottom: none;
+  }
+  .post-page__sources ol {
+    padding-left: var(--space-5);
+  }
+  .post-page__sources li {
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+  .post-page__source-link {
+    margin-top: var(--space-5);
+  }
+  @media (max-width: 900px) {
+    .post-page__grid {
+      grid-template-columns: 1fr;
+    }
+    .post-page__toc {
+      display: none;
+    }
+    .post-page__body {
+      padding: var(--space-4);
+    }
+    .post-page__text {
+      font-size: var(--font-size-md);
+    }
   }
 </style>
