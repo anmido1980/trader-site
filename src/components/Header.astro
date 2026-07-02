@@ -2,11 +2,11 @@
 import market from '../data/market.json';
 
 const nav = [
-  { href: '#top', label: 'Обзор' },
-  { href: '#topics', label: 'Темы' },
-  { href: '#rubrics', label: 'Рубрики' },
-  { href: '#subscribe', label: 'Подписка' },
-  { href: '#about', label: 'О канале' },
+  { href: '/#top', label: 'Обзор' },
+  { href: '/#topics', label: 'Темы' },
+  { href: '/#rubrics', label: 'Рубрики' },
+  { href: '/#subscribe', label: 'Подписка' },
+  { href: '/#about', label: 'О канале' },
 ];
 
 const updatedAt = new Date(market.updatedAt).toLocaleString('ru-RU', {
@@ -19,7 +19,7 @@ const updatedAt = new Date(market.updatedAt).toLocaleString('ru-RU', {
 
 <header class="topbar" id="site-header">
   <div class="topbar__inner container">
-    <a href="#top" class="topbar__brand" aria-label="Портфельный инвестор — на главную">
+    <a href="https://anmido.io/" class="topbar__brand" aria-label="Портфельный инвестор — на главную">
       <span class="topbar__logo" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
           <path d="M3 18 L9 11 L13 14 L21 5" stroke="#fff" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/>
@@ -49,7 +49,7 @@ const updatedAt = new Date(market.updatedAt).toLocaleString('ru-RU', {
         <span class="live-dot" aria-hidden="true"></span>
         <span class="topbar__status-text">Рынок · {updatedAt} MSK</span>
       </span>
-      <a href="#subscribe" class="btn btn--primary btn--sm">Подписаться</a>
+      <a href="/#subscribe" class="btn btn--primary btn--sm">Подписаться</a>
     </div>
   </div>
 </header>
