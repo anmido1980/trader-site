@@ -12,42 +12,42 @@
 
 ### Основные
 
-| Пакет | Версия | Назначение |
-|---|---|---|
-| `astro` | ^5.x | Фреймворк |
+| Пакет            | Версия | Назначение          |
+| ---------------- | ------ | ------------------- |
+| `astro`          | ^5.x   | Фреймворк           |
 | `@astrojs/check` | latest | TypeScript-проверка |
 
 ### Анимации и интерактивность
 
-| Пакет | Версия | Назначение |
-|---|---|---|
-| `gsap` | ^3.12 | Анимации (Timeline, ScrollTrigger, счётчики) |
-| `@gsap/trial` | ^3.12 | ScrollTrigger (входит в gsap с 3.12+) |
-| `lenis` | ^1.1 | Плавный скролл |
+| Пакет         | Версия | Назначение                                   |
+| ------------- | ------ | -------------------------------------------- |
+| `gsap`        | ^3.12  | Анимации (Timeline, ScrollTrigger, счётчики) |
+| `@gsap/trial` | ^3.12  | ScrollTrigger (входит в gsap с 3.12+)        |
+| `lenis`       | ^1.1   | Плавный скролл                               |
 
 ### Формы
 
-| Пакет | Версия | Назначение |
-|---|---|---|
-| — | — | Форма через внешний сервис (Formspree/Getform), без серверного кода |
+| Пакет | Версия | Назначение                                                          |
+| ----- | ------ | ------------------------------------------------------------------- |
+| —     | —      | Форма через внешний сервис (Formspree/Getform), без серверного кода |
 
 ### Dev-зависимости
 
-| Пакет | Версия | Назначение |
-|---|---|---|
-| `typescript` | ^5.x | Типы |
-| `prettier` | ^3.x | Форматирование |
+| Пакет                   | Версия | Назначение                   |
+| ----------------------- | ------ | ---------------------------- |
+| `typescript`            | ^5.x   | Типы                         |
+| `prettier`              | ^3.x   | Форматирование               |
 | `prettier-plugin-astro` | latest | Форматирование .astro файлов |
 
 ## astro.config.mjs
 
 ```javascript
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  output: 'static',
+  output: "static",
   build: {
-    assets: 'assets',
+    assets: "assets",
   },
   vite: {
     build: {
@@ -115,7 +115,7 @@ export default defineConfig({
   --color-accent-blue: #3b82f6;
 
   /* Типографика */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: "Inter", system-ui, -apple-system, sans-serif;
   --font-size-base: 16px;
   --line-height-base: 1.6;
 

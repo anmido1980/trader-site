@@ -1,0 +1,110 @@
+---
+// Плейсхолдеры: заменить на реальные данные перед публикацией.
+const stats = [
+  { value: '+12,4%', label: 'годовая доходность портфеля', note: '2024, в рублях' },
+  { value: '0,82', label: 'Sharpe ratio', note: 'по сделкам канала' },
+  { value: '−8,3%', label: 'макс. просадка', note: 'за 12 месяцев' },
+  { value: '2008', label: 'год на рынке', note: 'личный опыт автора' },
+];
+---
+
+<section class="results" id="results">
+  <div class="container">
+    <div class="results__head">
+      <span class="eyebrow">// Почему стоит читать</span>
+      <h2 class="results__title">Цифры вместо обещаний</h2>
+      <p class="results__lead">
+        Канал ведёт практикующий инвестор. Ниже — ключевые показатели,
+        которые можно проверить. Значения обновляются ежеквартально.
+      </p>
+    </div>
+
+    <div class="results__grid">
+      {stats.map((stat) => (
+        <div class="panel results__card" data-reveal>
+          <span class="results__value">{stat.value}</span>
+          <span class="results__label">{stat.label}</span>
+          <span class="results__note">{stat.note}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="panel results__disclaimer">
+      <p>
+        Данные приведены как иллюстрация инвестиционного опыта автора, а не как
+        гарантия будущей доходности. Все значения — плейсхолдеры, которые
+        нужно заменить реальными цифрами перед публикацией.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .results {
+    padding: var(--space-6) 0;
+    background: var(--color-bg-page);
+  }
+  .results__head {
+    max-width: 640px;
+    margin-bottom: var(--space-4);
+  }
+  .results__title {
+    font-size: var(--font-size-3xl);
+    margin: var(--space-3) 0 0;
+    line-height: 1.15;
+  }
+  .results__lead {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    line-height: 1.6;
+    margin-top: var(--space-2);
+  }
+  .results__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+  }
+  .results__card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .results__value {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    color: var(--color-accent);
+    line-height: 1;
+  }
+  .results__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    margin-top: var(--space-2);
+  }
+  .results__note {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+  .results__disclaimer {
+    padding: var(--space-3);
+  }
+  .results__disclaimer p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+  @media (max-width: 900px) {
+    .results__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 480px) {
+    .results__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

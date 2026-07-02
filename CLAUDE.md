@@ -75,3 +75,20 @@ YYYY-MM-DD_[тема]_[тип-файла].[расширение]
 - Не удалять файлы без явного разрешения.
 - Не выходить за пределы рабочей папки проекта.
 - Не добавлять в корень большие бинарные файлы без структурированного размещения.
+
+## Инфраструктура и домен
+
+- **Основная платформа деплоя:** Vercel, проект `trader-site` (Team 9199987), дефолтный URL `https://trader-site-rho.vercel.app`.
+- **Кастомный домен:** `anmido.io` и `www.anmido.io`.
+- **DNS-хостинг:** Cloudflare (`chelsea.ns.cloudflare.com`, `fattouche.ns.cloudflare.com`).
+- **Проблема:** стандартные Vercel CNAME (`cname.vercel-dns.com`, `a396d6ce74c0727b.vercel-dns-017.com`) разрешаются в IP, недоступные без VPN из РФ.
+- **Решение:** в Cloudflare DNS используются A-записи на IP, возвращаемые для дефолтного Vercel-URL:
+  - `anmido.io` → A `64.29.17.131` + A `216.198.79.131`
+  - `www.anmido.io` → A `64.29.17.131` + A `216.198.79.131`
+  - Proxy status: **DNS only** (серое облако), иначе сайт недоступен без VPN.
+- **Проверка актуальности IP:** если сайт перестал открываться без VPN, выполнить `nslookup -type=A trader-site-rho.vercel.app` и обновить A-записи.
+- **Vercel-статус:** оба домена должны показывать **Production** в `vercel.com/9199987/trader-site/settings/domains`.
+- **Редирект:** `anmido.io` → `www.anmido.io` настраивается в Vercel (Settings → Domains).
+- **SSL/TLS в Cloudflare:** Full (strict), но при DNS-only прокси это менее критично.
+- **Особенность:** дефолтный Vercel-URL `https://trader-site-rho.vercel.app` открывается без VPN. Кастомный домен `anmido.io` / `www.anmido.io` с телефона и с компьютера НЕ открывается без VPN — проблема в блокировке домена/сертификата (скорее всего DPI/SNI), а не в IP Vercel.
+- **Альтернативы:** Cloudflare Pages / Netlify / GitHub Pages рассматриваются только если Vercel полностью перестанет быть доступен без VPN. Владелец хочет оставить Vercel основной платформой.

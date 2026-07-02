@@ -1,0 +1,72 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPosts } from '../../utils/posts';
+
+const posts = await getPosts();
+---
+
+<Layout
+  title="Материалы · Портфельный инвестор"
+  description="Архив разборов, обзоров инструментов и заметок о портфельных инвестициях."
+  canonical="/posts/"
+>
+  <Header />
+  <main id="main" class="posts-page">
+    <div class="container">
+      <header class="posts-page__head">
+        <span class="eyebrow">// Архив</span>
+        <h1>Все материалы</h1>
+        <p class="posts-page__lead">
+          Обзоры инструментов, разборы рыночных ситуаций и практические идеи.
+        </p>
+      </header>
+
+      {posts.length > 0 ? (
+        <div class="posts-page__grid">
+          {posts.map((post) => <PostCard post={post} />)}
+        </div>
+      ) : (
+        <p class="posts-page__empty">Пока нет опубликованных материалов.</p>
+      )}
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .posts-page {
+    padding: var(--space-6) 0;
+    background: var(--color-bg-page);
+    min-height: 60vh;
+  }
+  .posts-page__head {
+    margin-bottom: var(--space-4);
+  }
+  .posts-page__head h1 {
+    font-size: var(--font-size-3xl);
+    margin: var(--space-3) 0 0;
+    line-height: 1.15;
+  }
+  .posts-page__lead {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    margin-top: var(--space-2);
+  }
+  .posts-page__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+  }
+  .posts-page__empty {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+  }
+  @media (max-width: 1000px) {
+    .posts-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

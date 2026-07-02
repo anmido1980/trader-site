@@ -1,13 +1,16 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  output: 'static',
+  site: "https://anmido.io",
+  output: "static",
   build: {
-    assets: 'assets',
+    assets: "assets",
   },
   vite: {
     build: {
       cssMinify: true,
     },
   },
+  integrations: [sitemap()],
 });

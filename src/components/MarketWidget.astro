@@ -2,6 +2,20 @@
 import market from '../data/market.json';
 import { sparkline } from '../utils/sparkline';
 
+interface MarketItem {
+  secid: string;
+  label: string;
+  price: string;
+  priceValue: number | null;
+  change: string;
+  changeValue: number;
+  history: number[];
+  priceUsd?: string;
+  priceUsdUnit?: string;
+  historyUsd?: number[];
+}
+
+const typedItems = market.items as MarketItem[];
 const date = new Date(market.updatedAt);
 const updatedAt = date.toLocaleString('ru-RU', {
   day: '2-digit',
@@ -32,8 +46,9 @@ const updatedAt = date.toLocaleString('ru-RU', {
       </thead>
       <tbody>
         {
-          market.items.map((item) => {
+          typedItems.map((item) => {
             const positive = item.changeValue >= 0;
+            const sparklineHistory = item.historyUsd ?? item.history;
             return (
               <tr>
                 <td class="market-table__name">
@@ -63,7 +78,7 @@ const updatedAt = date.toLocaleString('ru-RU', {
                       aria-hidden="true"
                     >
                       <path
-                        d={sparkline(item.historyUsd ?? item.history, 120, 32)}
+                        d={sparkline(sparklineHistory, 120, 32)}
                         fill="none"
                         stroke={positive ? 'var(--color-positive)' : 'var(--color-negative)'}
                         stroke-width="1.5"

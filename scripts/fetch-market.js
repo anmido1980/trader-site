@@ -1,21 +1,70 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from "node:fs";
+import path from "node:path";
 
-const OUT = path.resolve('src/data/market.json');
+const OUT = path.resolve("src/data/market.json");
 
 const symbols = [
-  { secid: 'IMOEX', engine: 'stock', market: 'index', board: 'SNDX', label: 'Индекс Мосбиржи', decimals: 2 },
-  { secid: 'USD000UTSTOM', engine: 'currency', market: 'selt', board: 'CETS', label: 'USD/RUB', decimals: 4 },
-  { secid: 'EUR_RUB__TOM', engine: 'currency', market: 'selt', board: 'CETS', label: 'EUR/RUB', decimals: 4 },
-  { secid: 'SBER', engine: 'stock', market: 'shares', board: 'TQBR', label: 'Сбербанк', decimals: 2 },
-  { secid: 'YDEX', engine: 'stock', market: 'shares', board: 'TQBR', label: 'Яндекс', decimals: 2 },
-  { secid: 'GLDRUB_TOM', engine: 'currency', market: 'selt', board: 'CNGD', label: 'Золото', decimals: 2 },
-  { secid: 'PLDRUB_TOM', engine: 'currency', market: 'selt', board: 'CETS', label: 'Палладий', decimals: 2 },
+  {
+    secid: "IMOEX",
+    engine: "stock",
+    market: "index",
+    board: "SNDX",
+    label: "Индекс Мосбиржи",
+    decimals: 2,
+  },
+  {
+    secid: "USD000UTSTOM",
+    engine: "currency",
+    market: "selt",
+    board: "CETS",
+    label: "USD/RUB",
+    decimals: 4,
+  },
+  {
+    secid: "EUR_RUB__TOM",
+    engine: "currency",
+    market: "selt",
+    board: "CETS",
+    label: "EUR/RUB",
+    decimals: 4,
+  },
+  {
+    secid: "SBER",
+    engine: "stock",
+    market: "shares",
+    board: "TQBR",
+    label: "Сбербанк",
+    decimals: 2,
+  },
+  {
+    secid: "YDEX",
+    engine: "stock",
+    market: "shares",
+    board: "TQBR",
+    label: "Яндекс",
+    decimals: 2,
+  },
+  {
+    secid: "GLDRUB_TOM",
+    engine: "currency",
+    market: "selt",
+    board: "CNGD",
+    label: "Золото",
+    decimals: 2,
+  },
+  {
+    secid: "PLDRUB_TOM",
+    engine: "currency",
+    market: "selt",
+    board: "CETS",
+    label: "Палладий",
+    decimals: 2,
+  },
 ];
 
 function fmt(num, decimals) {
-  if (num == null) return '—';
-  return Number(num).toLocaleString('ru-RU', {
+  if (num == null) return "—";
+  return Number(num).toLocaleString("ru-RU", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });
@@ -26,7 +75,7 @@ function buildUrl(secid, engine, market) {
 }
 
 function formatDate(d) {
-  return d.toISOString().split('T')[0];
+  return d.toISOString().split("T")[0];
 }
 
 function buildHistoryUrl(secid, engine, market, board) {
@@ -47,27 +96,54 @@ function getCurrentPrice(secBlock, mdBlock) {
   const mdRows = mdBlock?.[1];
   if (!sec || !Array.isArray(mdRows) || mdRows.length === 0) return null;
 
-  const md = mdRows.find((row) => {
-    const price = row.LAST ?? row.MARKETPRICE ?? row.LCURRENTPRICE ?? row.OPEN ?? row.CLOSEPRICE ?? row.CURRENTVALUE ?? null;
-    return price != null;
-  }) ?? mdRows[0];
+  const md =
+    mdRows.find((row) => {
+      const price =
+        row.LAST ??
+        row.MARKETPRICE ??
+        row.LCURRENTPRICE ??
+        row.OPEN ??
+        row.CLOSEPRICE ??
+        row.CURRENTVALUE ??
+        null;
+      return price != null;
+    }) ?? mdRows[0];
 
   const prev = sec.PREVPRICE ?? sec.PREVWAPRICE ?? null;
-  const last = md.LAST ?? md.MARKETPRICE ?? md.LCURRENTPRICE ?? md.OPEN ?? md.CLOSEPRICE ?? md.CURRENTVALUE ?? null;
+  const last =
+    md.LAST ??
+    md.MARKETPRICE ??
+    md.LCURRENTPRICE ??
+    md.OPEN ??
+    md.CLOSEPRICE ??
+    md.CURRENTVALUE ??
+    null;
 
   if (last == null) return null;
 
   if (md.LASTCHANGEPRC != null) {
-    return { last: Number(last), prev: prev != null ? Number(prev) : null, changePrc: Number(md.LASTCHANGEPRC) };
+    return {
+      last: Number(last),
+      prev: prev != null ? Number(prev) : null,
+      changePrc: Number(md.LASTCHANGEPRC),
+    };
   }
-  return { last: Number(last), prev: prev != null ? Number(prev) : null, changePrc: null };
+  return {
+    last: Number(last),
+    prev: prev != null ? Number(prev) : null,
+    changePrc: null,
+  };
 }
 
 function getHistory(block) {
   const rows = block?.[1];
   if (!Array.isArray(rows)) return [];
   return rows
-    .filter((row) => Number(row.NUMTRADES ?? 0) > 0 || Number(row.CLOSE ?? row.CLOSEPRICE ?? row.LAST ?? 0) > 0)
+    .filter(
+      (row) =>
+        Number(row.NUMTRADES ?? 0) > 0 ||
+        Number(row.CLOSE ?? row.CLOSEPRICE ?? row.LAST ?? 0) > 0,
+    )
     .map((row) => Number(row.CLOSE ?? row.CLOSEPRICE ?? row.LAST))
     .filter((v) => !Number.isNaN(v) && v > 0);
 }
@@ -82,12 +158,16 @@ async function run() {
 
   for (const s of symbols) {
     try {
-      const currentJson = await fetchJson(buildUrl(s.secid, s.engine, s.market));
+      const currentJson = await fetchJson(
+        buildUrl(s.secid, s.engine, s.market),
+      );
       const secBlock = currentJson.find((x) => x.securities)?.securities;
       const mdBlock = currentJson.find((x) => x.marketdata)?.marketdata;
       const current = getCurrentPrice(secBlock, mdBlock);
 
-      const historyJson = await fetchJson(buildHistoryUrl(s.secid, s.engine, s.market, s.board));
+      const historyJson = await fetchJson(
+        buildHistoryUrl(s.secid, s.engine, s.market, s.board),
+      );
       const historyBlock = historyJson.find((x) => x.history)?.history;
       const history = getHistory(historyBlock);
 
@@ -101,7 +181,10 @@ async function run() {
         label: s.label,
         price: fmt(current?.last, s.decimals),
         priceValue: current?.last ?? null,
-        change: change != null ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}%` : '—',
+        change:
+          change != null
+            ? `${change >= 0 ? "+" : ""}${change.toFixed(2)}%`
+            : "—",
         changeValue: change ?? 0,
         history,
       });
@@ -110,29 +193,36 @@ async function run() {
       result.push({
         secid: s.secid,
         label: s.label,
-        price: '—',
+        price: "—",
         priceValue: null,
-        change: '—',
+        change: "—",
         changeValue: 0,
         history: [],
       });
     }
   }
 
-  const usdItem = result.find((i) => i.secid === 'USD000UTSTOM');
-  const usdRate = parseFloat(String(usdItem?.priceValue ?? '').replace(/\s/g, '').replace(',', '.')) || null;
+  const usdItem = result.find((i) => i.secid === "USD000UTSTOM");
+  const usdRate =
+    parseFloat(
+      String(usdItem?.priceValue ?? "")
+        .replace(/\s/g, "")
+        .replace(",", "."),
+    ) || null;
   if (usdRate) {
+    const TROY_OZ_GRAMS = 31.1034768;
     for (const item of result) {
-      if (['GLDRUB_TOM', 'PLDRUB_TOM'].includes(item.secid) && item.priceValue != null) {
-        item.priceUsd = `$${fmt(item.priceValue / usdRate, 2)}`;
-      }
-      if (item.secid === 'GLDRUB_TOM') {
-        const TROY_OZ_GRAMS = 31.1034768;
-        const usdPerOz = item.priceValue / usdRate * TROY_OZ_GRAMS;
+      if (
+        ["GLDRUB_TOM", "PLDRUB_TOM"].includes(item.secid) &&
+        item.priceValue != null
+      ) {
+        const usdPerOz = (item.priceValue / usdRate) * TROY_OZ_GRAMS;
         item.priceUsd = `$${fmt(usdPerOz, 2)}`;
-        item.priceUsdUnit = 'за тр. унцию';
+        item.priceUsdUnit = "за тр. унцию";
         if (item.history.length > 0) {
-          item.historyUsd = item.history.map((v) => Number((v / usdRate * TROY_OZ_GRAMS).toFixed(2)));
+          /** @type {any} */ (item).historyUsd = item.history.map((v) =>
+            Number(((v / usdRate) * TROY_OZ_GRAMS).toFixed(2)),
+          );
         }
       }
     }

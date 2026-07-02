@@ -28,6 +28,7 @@ npm run preview
 **Минусы:** Только статика, нет серверных функций, репозиторий публичный для бесплатного тира.
 
 **Настройка:**
+
 1. Создать репозиторий на GitHub
 2. Push кода
 3. Settings → Pages → Source: GitHub Actions
@@ -73,6 +74,7 @@ jobs:
 **Минусы:** 100GB bandwidth/месяц на бесплатном тире.
 
 **Настройка:**
+
 1. Подключить репозиторий на netlify.com
 2. Build command: `npm run build`
 3. Publish directory: `dist`
@@ -89,6 +91,7 @@ jobs:
 **Минусы:** Коммерческий — условия могут меняться.
 
 **Текущая настройка проекта:**
+
 - Фреймворк: Astro 5
 - Адаптер: `@astrojs/vercel@9.0.5`
 - Режим вывода: `server` (SSR + возможность добавлять API/формы)
@@ -98,6 +101,7 @@ jobs:
 **Пошаговая настройка:**
 
 1. **Подготовить локально**
+
    ```bash
    npm install
    npm run check
@@ -110,6 +114,7 @@ jobs:
    - Скопировать URL репозитория.
 
 3. **Запушить код**
+
    ```bash
    git remote add origin https://github.com/<USERNAME>/<REPO>.git
    git branch -M main
@@ -136,6 +141,7 @@ jobs:
    - В Vercel SSL-сертификат выдаётся автоматически.
 
 **Последующие обновления:**
+
 - Любой `git push` в `main` запускает автодеплой.
 - Pull Request получает собственный превью-URL.
 - Обновлять данные: менять JSON в `src/data/` → `git commit` → `git push`.

@@ -5,7 +5,7 @@
  * @param h - height in viewBox units
  */
 export function sparkline(values: number[], w: number, h: number): string {
-  if (values.length === 0) return '';
+  if (values.length === 0) return "";
   const min = Math.min(...values);
   const max = Math.max(...values);
   const range = max - min || 1;
@@ -16,7 +16,7 @@ export function sparkline(values: number[], w: number, h: number): string {
     .map((v, i) => {
       const x = i * stepX;
       const y = padY + (1 - (v - min) / range) * innerH;
-      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+      return `${i === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
     })
-    .join(' ');
+    .join(" ");
 }

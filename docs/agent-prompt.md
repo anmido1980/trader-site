@@ -42,6 +42,7 @@
 ### Шаг 3: Данные (JSON)
 
 Создать `src/data/` с placeholder-данными:
+
 1. `metrics.json` — метрики Hero (4 счётчика)
 2. `trades.json` — последние 5 сделок
 3. `backtests.json` — 3 бэктеста
@@ -103,16 +104,16 @@
 
 ### Цвета (тёмная тема)
 
-| Токен | Значение | Использование |
-|---|---|---|
-| `--color-bg-primary` | `#0a0e1a` | Основной фон |
-| `--color-bg-secondary` | `#111827` | Фон секций (чередование) |
-| `--color-bg-card` | `#1a2035` | Фон карточек |
-| `--color-text-primary` | `#f8fafc` | Основной текст |
-| `--color-text-secondary` | `#94a3b8` | Второстепенный текст |
-| `--color-accent-green` | `#22c55e` | Прибыль, позитив |
-| `--color-accent-red` | `#ef4444` | Убыток, негатив |
-| `--color-accent-blue` | `#3b82f6` | CTA, ссылки |
+| Токен                    | Значение  | Использование            |
+| ------------------------ | --------- | ------------------------ |
+| `--color-bg-primary`     | `#0a0e1a` | Основной фон             |
+| `--color-bg-secondary`   | `#111827` | Фон секций (чередование) |
+| `--color-bg-card`        | `#1a2035` | Фон карточек             |
+| `--color-text-primary`   | `#f8fafc` | Основной текст           |
+| `--color-text-secondary` | `#94a3b8` | Второстепенный текст     |
+| `--color-accent-green`   | `#22c55e` | Прибыль, позитив         |
+| `--color-accent-red`     | `#ef4444` | Убыток, негатив          |
+| `--color-accent-blue`    | `#3b82f6` | CTA, ссылки              |
 
 ### Типографика
 
@@ -145,7 +146,12 @@
   "ctaText": "string",
   "ctaLink": "string (anchor)",
   "items": [
-    { "label": "string", "value": "number", "prefix": "string", "suffix": "string" }
+    {
+      "label": "string",
+      "value": "number",
+      "prefix": "string",
+      "suffix": "string"
+    }
   ]
 }
 ```
@@ -155,7 +161,14 @@
 ```json
 {
   "trades": [
-    { "date": "YYYY-MM-DD", "instrument": "string", "direction": "Long|Short", "entry": "number", "exit": "number", "result": "string" }
+    {
+      "date": "YYYY-MM-DD",
+      "instrument": "string",
+      "direction": "Long|Short",
+      "entry": "number",
+      "exit": "number",
+      "result": "string"
+    }
   ]
 }
 ```
@@ -165,7 +178,13 @@
 ```json
 {
   "backtests": [
-    { "name": "string", "period": "string", "returnPct": "string", "maxDrawdown": "string", "instrument": "string" }
+    {
+      "name": "string",
+      "period": "string",
+      "returnPct": "string",
+      "maxDrawdown": "string",
+      "instrument": "string"
+    }
   ]
 }
 ```
@@ -175,7 +194,13 @@
 ```json
 {
   "cases": [
-    { "period": "string", "instrument": "string", "strategy": "string", "result": "string", "link": "string" }
+    {
+      "period": "string",
+      "instrument": "string",
+      "strategy": "string",
+      "result": "string",
+      "link": "string"
+    }
   ]
 }
 ```
@@ -185,7 +210,12 @@
 ```json
 {
   "testimonials": [
-    { "name": "string", "role": "string", "text": "string", "photo": "string (path)" }
+    {
+      "name": "string",
+      "role": "string",
+      "text": "string",
+      "photo": "string (path)"
+    }
   ]
 }
 ```
@@ -194,9 +224,7 @@
 
 ```json
 {
-  "partners": [
-    { "name": "string", "logo": "string (path)" }
-  ]
+  "partners": [{ "name": "string", "logo": "string (path)" }]
 }
 ```
 
@@ -204,16 +232,17 @@
 
 ## Карта анимаций
 
-| Секция | Page load | Scroll | Hover | Auto |
-|---|---|---|---|---|
-| Header | — | Фон (backdrop-blur) | — | — |
-| Hero | Все элементы, счётчики | — | CTA-кнопка | — |
-| Benefits | — | Заголовок + карточки (cascade) | Карточки (lift) | — |
-| Trust | — | Заголовок + кейсы + логотипы | Логотипы (color) | Слайдер (5s) |
-| CTA | — | Заголовок + форма + параллакс | Кнопка | Pulse кнопки |
-| Footer | — | — | Ссылки | — |
+| Секция   | Page load              | Scroll                         | Hover            | Auto         |
+| -------- | ---------------------- | ------------------------------ | ---------------- | ------------ |
+| Header   | —                      | Фон (backdrop-blur)            | —                | —            |
+| Hero     | Все элементы, счётчики | —                              | CTA-кнопка       | —            |
+| Benefits | —                      | Заголовок + карточки (cascade) | Карточки (lift)  | —            |
+| Trust    | —                      | Заголовок + кейсы + логотипы   | Логотипы (color) | Слайдер (5s) |
+| CTA      | —                      | Заголовок + форма + параллакс  | Кнопка           | Pulse кнопки |
+| Footer   | —                      | —                              | Ссылки           | —            |
 
 **Параметры GSAP по умолчанию:**
+
 - ScrollTrigger start: `"top 85%"` (заголовки), `"top 80%"` (карточки)
 - ease: `power3.out`
 - stagger: `0.15s` (карточки)

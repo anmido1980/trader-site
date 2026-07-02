@@ -5,12 +5,36 @@ import '../styles/animations.css';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  canonical?: string;
 }
 
 const {
   title = 'Портфельный инвестор — обзоры, стратегии, разборы',
   description = 'Канал о портфельных инвестициях: обзоры финансовых инструментов, формирование портфеля, приёмы увеличения доходности.',
+  image = '/images/2026-07-01_trading-humor_hero.webp',
+  canonical = Astro.url.pathname,
 } = Astro.props;
+
+const canonicalUrl = new URL(canonical, Astro.site ?? 'https://anmido.io').href;
+const ogImageUrl = new URL(image, Astro.site ?? 'https://anmido.io').href;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: title,
+      url: canonicalUrl,
+    },
+    {
+      '@type': 'Organization',
+      name: 'Портфельный инвестор',
+      url: canonicalUrl,
+      logo: new URL('/favicon.svg', Astro.site ?? 'https://anmido.io').href,
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -22,11 +46,21 @@ const {
     <meta name="description" content={description} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="ru_RU" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
     <title>{title}</title>
   </head>

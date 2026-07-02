@@ -153,8 +153,10 @@ ol {
   --radius-pill: 999px;
 
   /* Shadows */
-  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px var(--color-border-light);
-  --shadow-panel-hover: 0 2px 6px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-border);
+  --shadow-panel:
+    0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px var(--color-border-light);
+  --shadow-panel-hover:
+    0 2px 6px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--color-border);
   --shadow-header: inset 0 -1px 0 var(--color-border-header);
 
   /* Transitions */
@@ -178,10 +180,18 @@ h4 {
   line-height: var(--line-height-tight);
 }
 
-h1 { font-size: var(--font-size-4xl); }
-h2 { font-size: var(--font-size-3xl); }
-h3 { font-size: var(--font-size-2xl); }
-h4 { font-size: var(--font-size-xl); }
+h1 {
+  font-size: var(--font-size-4xl);
+}
+h2 {
+  font-size: var(--font-size-3xl);
+}
+h3 {
+  font-size: var(--font-size-2xl);
+}
+h4 {
+  font-size: var(--font-size-xl);
+}
 
 p {
   color: var(--color-text-secondary);
@@ -203,7 +213,7 @@ p {
 
 .mono {
   font-family: var(--font-mono);
-  font-feature-settings: 'tnum' 1;
+  font-feature-settings: "tnum" 1;
 }
 
 .eyebrow {
@@ -216,12 +226,18 @@ p {
 
 .num {
   font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum' 1;
+  font-feature-settings: "tnum" 1;
 }
 
-.delta-up { color: var(--color-positive); }
-.delta-down { color: var(--color-negative); }
-.delta-flat { color: var(--color-text-muted); }
+.delta-up {
+  color: var(--color-positive);
+}
+.delta-down {
+  color: var(--color-negative);
+}
+.delta-flat {
+  color: var(--color-text-muted);
+}
 
 /* ---------- Panel (the core building block) ---------- */
 .panel {
@@ -272,7 +288,9 @@ p {
   font-size: var(--font-size-sm);
   font-weight: 600;
   border-radius: var(--radius-md);
-  transition: background var(--t-fast), border-color var(--t-fast);
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
   cursor: pointer;
   text-decoration: none;
 }
@@ -304,6 +322,18 @@ p {
 .btn--sm {
   padding: 4px 10px;
   font-size: var(--font-size-xs);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn--secondary:hover {
+  background: var(--color-accent-light);
+  color: var(--color-accent-dark, #154781);
+  border-color: var(--color-accent-dark, #154781);
 }
 
 /* ---------- Focus ---------- */

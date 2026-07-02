@@ -1,0 +1,103 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getPosts } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<Layout
+  title={`${post.title} · Портфельный инвестор`}
+  description={post.summary}
+  image={post.image}
+  canonical={`/posts/${post.slug}/`}
+>
+  <Header />
+  <main id="main" class="post-page">
+    <article class="container post-page__article">
+      <header class="post-page__head">
+        <time datetime={post.publishedAt}>{date}</time>
+        <h1>{post.title}</h1>
+      </header>
+
+      <img
+        src={post.image}
+        alt=""
+        width="1024"
+        height="576"
+        loading="eager"
+        class="post-page__image"
+      />
+
+      <div class="post-page__body">
+        <p class="post-page__summary">{post.summary}</p>
+        <a href={post.url} target="_blank" rel="noopener" class="btn btn--primary">
+          Источник →
+        </a>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .post-page {
+    padding: var(--space-5) 0;
+    background: var(--color-bg-page);
+    min-height: 60vh;
+  }
+  .post-page__article {
+    max-width: 760px;
+  }
+  .post-page__head {
+    margin-bottom: var(--space-4);
+  }
+  .post-page__head time {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--space-2);
+  }
+  .post-page__head h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0;
+  }
+  .post-page__image {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-panel);
+    margin-bottom: var(--space-4);
+  }
+  .post-page__body {
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-panel);
+  }
+  .post-page__summary {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0 0 var(--space-3);
+  }
+</style>

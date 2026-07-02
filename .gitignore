@@ -28,6 +28,7 @@ pnpm-debug.log*
 .claude/
 .mcp.json
 skills-lock.json
+.playwright-mcp/
 
 # Temporary root files
 2026-06-21_*

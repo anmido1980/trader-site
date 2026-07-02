@@ -1,11 +1,20 @@
 ---
+import market from '../data/market.json';
+
 const nav = [
-  { href: '#overview', label: 'Обзор' },
+  { href: '#top', label: 'Обзор' },
   { href: '#topics', label: 'Темы' },
   { href: '#rubrics', label: 'Рубрики' },
-  { href: '#monitor', label: 'Монитор' },
+  { href: '#subscribe', label: 'Подписка' },
   { href: '#about', label: 'О канале' },
 ];
+
+const updatedAt = new Date(market.updatedAt).toLocaleString('ru-RU', {
+  day: '2-digit',
+  month: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+});
 ---
 
 <header class="topbar" id="site-header">
@@ -38,7 +47,7 @@ const nav = [
     <div class="topbar__actions">
       <span class="topbar__status">
         <span class="live-dot" aria-hidden="true"></span>
-        <span class="topbar__status-text">Рынок · 11:24 MSK</span>
+        <span class="topbar__status-text">Рынок · {updatedAt} MSK</span>
       </span>
       <a href="#subscribe" class="btn btn--primary btn--sm">Подписаться</a>
     </div>

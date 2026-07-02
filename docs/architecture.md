@@ -64,12 +64,14 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Ответственность:** HTML-скелет, подключение шрифтов, CSS, скриптов. Мета-теги, Open Graph.
 
 **Props:**
+
 - `title: string` — заголовок страницы
 - `description: string` — мета-описание
 
 **Слоты:** `<slot />` — основной контент страницы
 
 **Подключает:**
+
 - Google Fonts (Inter, preconnect)
 - `global.css`
 - `animations.css`
@@ -84,10 +86,12 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Ответственность:** Фиксированная навигация, якорные ссылки на секции.
 
 **Поведение:**
+
 - При скролле > 50px: фон с `backdrop-blur`, полупрозрачный
 - Мобильное меню: гамбургер → раскрытие
 
 **Содержимое:**
+
 - Логотип / имя (слева)
 - Навигация: Hero | Польза | Доверие | CTA (справа, якорные ссылки)
 - Якорные ссылки используют `href="#section-id"`, Lenis обрабатывает плавный скролл
@@ -103,6 +107,7 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Данные из:** `metrics.json`
 
 **Структура:**
+
 ```
 <section id="hero">
   <div class="hero-bg">          <!-- Canvas / CSS-градиент -->
@@ -122,6 +127,7 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Ответственность:** Анимированный счётчик числа (доходность, количество сделок и т.д.).
 
 **Props:**
+
 - `label: string` — подпись (например, «Доходность за год»)
 - `value: number` — целевое значение
 - `suffix: string` — суффикс (% , шт., пт.)
@@ -138,6 +144,7 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Внутренние компоненты:** `BenefitCard.astro` (×4)
 
 **Структура:**
+
 ```
 <section id="benefits">
   <h2>Заголовок секции</h2>
@@ -154,6 +161,7 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Ответственность:** Одна карточка пользы.
 
 **Props:**
+
 - `icon: string` — SVG-иконка (inline)
 - `title: string`
 - `description: string`
@@ -197,6 +205,7 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Ответственность:** Карточка кейса.
 
 **Props:**
+
 - `period: string` — период
 - `instrument: string` — инструмент
 - `strategy: string` — стратегия
@@ -258,6 +267,7 @@ d:\Yandex.Disk\Project\Claude\Site\
 **Ответственность:** Навигация, контакты, дисклеймер, копирайт.
 
 **Структура:**
+
 ```
 <footer>
   <nav>Якорные ссылки</nav>
@@ -386,6 +396,7 @@ Layout.astro
 ```
 
 **Поток данных:**
+
 - `index.astro` импортирует JSON из `src/data/`
 - Передаёт данные в компоненты через props
 - Компоненты рендерят статический HTML
