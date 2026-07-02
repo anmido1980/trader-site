@@ -30,6 +30,13 @@ const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
       <a href={`/posts/${post.slug}/`}>{post.title}</a>
     </h3>
     <p class="post-card__summary">{post.summary}</p>
+    {post.tags.length > 0 && (
+      <div class="post-card__tags">
+        {post.tags.slice(0, 3).map((tag) => (
+          <a href={`/tags/${tag}/`} class="post-card__tag">#{tag}</a>
+        ))}
+      </div>
+    )}
   </div>
 </article>
 
@@ -87,5 +94,20 @@ const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
     color: var(--color-text-secondary);
     line-height: 1.5;
     margin: 0;
+  }
+  .post-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+  .post-card__tag {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .post-card__tag:hover {
+    text-decoration: underline;
   }
 </style>

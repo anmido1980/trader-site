@@ -1,0 +1,60 @@
+---
+interface Props {
+  headings: { id: string; text: string; depth: number }[];
+}
+
+const { headings } = Astro.props;
+---
+
+{headings.length > 0 && (
+  <nav class="toc" aria-label="Оглавление">
+    <p class="toc__title">Содержание</p>
+    <ul class="toc__list">
+      {headings.map((h) => (
+        <li class={`toc__item toc__item--depth-${h.depth}`}>
+          <a href={`#${h.id}`}>{h.text}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .toc {
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .toc__title {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .toc__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toc__item a {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+  .toc__item a:hover {
+    color: var(--color-accent);
+  }
+  .toc__item--depth-2 {
+    padding-left: var(--space-3);
+  }
+  .toc__item--depth-3 {
+    padding-left: calc(var(--space-3) * 2);
+  }
+</style>
