@@ -15,7 +15,8 @@ function parseDate(value: string): Date {
 }
 
 function makeSummary(text: string): string {
-  return text.replace(/\n+/g, " ").slice(0, 160).trim() + "…";
+  const clean = text.replace(/\n+/g, " ").trim();
+  return clean.length > 160 ? clean.slice(0, 160).trim() + "…" : clean;
 }
 
 export async function getPosts(): Promise<Post[]> {
@@ -30,11 +31,15 @@ export async function getPosts(): Promise<Post[]> {
         ?.replace(/_post\.json$/, "") ?? "";
     const data = files[path] as any;
     const source = data.source ?? {};
+    const content = data.content ?? {};
     const imageMeta = data.image ?? {};
     const image = imageMeta.local_path
       ? imageMeta.local_path.replace(/^public/, "")
       : "/images/2026-07-01_trading-humor_hero.webp";
-    const content = data.content?.telegram ?? source.title ?? "";
+    const body = content.body ?? content.telegram ?? source.title ?? "";
+    const summary = content.summary
+      ? makeSummary(content.summary)
+      : makeSummary(body);
 
     posts.push({
       slug,
@@ -43,8 +48,8 @@ export async function getPosts(): Promise<Post[]> {
       publishedAt:
         source.published_at ?? new Date().toISOString().split("T")[0],
       image,
-      summary: makeSummary(content),
-      content,
+      summary,
+      content: body,
       tags: data.tags ?? [],
     });
   }

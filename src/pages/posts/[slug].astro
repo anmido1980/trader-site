@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getPosts } from '../../utils/posts';
+import { marked } from 'marked';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -19,14 +20,10 @@ const date = new Date(post.publishedAt).toLocaleDateString('ru-RU', {
   year: 'numeric',
 });
 
-function renderContent(text: string) {
-  return text
-    .split('\n\n')
-    .map((paragraph) => `<p>${paragraph.replace(/\n/g, '<br />')}</p>`)
-    .join('\n');
-}
-
-const htmlContent = renderContent(post.content);
+const htmlContent = await marked.parse(post.content, {
+  gfm: true,
+  breaks: false,
+});
 ---
 
 <Layout
