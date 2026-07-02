@@ -32,3 +32,6 @@ skills-lock.json
 
 # Temporary root files
 2026-06-21_*
+
+# Local Telegram export
+telegram-export/
