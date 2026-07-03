@@ -13,16 +13,40 @@ interface MarketItem {
   priceUsd?: string;
   priceUsdUnit?: string;
   historyUsd?: number[];
+  engine?: string;
+  market?: string;
+  decimals?: number;
 }
 
-const typedItems = market.items as MarketItem[];
-const date = new Date(market.updatedAt);
+const defaultEngines: Record<string, { engine: string; market: string; decimals: number }> = {
+  IMOEX: { engine: 'stock', market: 'index', decimals: 2 },
+  USD000UTSTOM: { engine: 'currency', market: 'selt', decimals: 4 },
+  EUR_RUB__TOM: { engine: 'currency', market: 'selt', decimals: 4 },
+  SBER: { engine: 'stock', market: 'shares', decimals: 2 },
+  YDEX: { engine: 'stock', market: 'shares', decimals: 2 },
+  GLDRUB_TOM: { engine: 'currency', market: 'selt', decimals: 2 },
+  PLDRUB_TOM: { engine: 'currency', market: 'selt', decimals: 2 },
+};
+
+const typedItems = (market.items as MarketItem[]).map((item) => {
+  const cfg = defaultEngines[item.secid] || { engine: 'stock', market: 'shares', decimals: 2 };
+  return { ...item, ...cfg };
+});
+
+const date = new Date();
 const updatedAt = date.toLocaleString('ru-RU', {
   day: '2-digit',
   month: '2-digit',
   hour: '2-digit',
   minute: '2-digit',
 });
+
+const clientItems = typedItems.map((item) => ({
+  secid: item.secid,
+  engine: item.engine,
+  market: item.market,
+  decimals: item.decimals,
+}));
 ---
 
 <section class="market-widget" id="market">
@@ -31,7 +55,7 @@ const updatedAt = date.toLocaleString('ru-RU', {
       <span class="live-dot" aria-hidden="true"></span>
       <h2 class="market-widget__title">Рынок онлайн</h2>
     </div>
-    <span class="market-widget__updated">Обновлено {updatedAt} MSK · MOEX</span>
+    <span class="market-widget__updated" id="market-updated">Обновлено {updatedAt} MSK · MOEX</span>
   </header>
 
   <div class="market-widget__body">
@@ -50,24 +74,27 @@ const updatedAt = date.toLocaleString('ru-RU', {
             const positive = item.changeValue >= 0;
             const sparklineHistory = item.historyUsd ?? item.history;
             return (
-              <tr>
+              <tr data-secid={item.secid}>
                 <td class="market-table__name">
                   <span class="market-table__label">{item.label}</span>
                   <span class="market-table__secid">{item.secid}</span>
                 </td>
-                <td class="market-table__num market-table__price">
+                <td class="market-table__num market-table__price" data-field="price">
                   <div>{item.price}</div>
                   {item.priceUsd && (
-                    <div class="market-table__usd">
+                    <div class="market-table__usd" data-field="priceUsd">
                       {item.priceUsd}
                       {item.priceUsdUnit && <span class="market-table__unit"> {item.priceUsdUnit}</span>}
                     </div>
                   )}
                 </td>
-                <td class={`market-table__num ${positive ? 'delta-up' : 'delta-down'}`}>
+                <td
+                  class={`market-table__num ${positive ? 'delta-up' : 'delta-down'}`}
+                  data-field="change"
+                >
                   {item.change}
                 </td>
-                <td class="market-table__chart">
+                <td class="market-table__chart" data-field="chart">
                   {item.history.length > 1 ? (
                     <svg
                       viewBox="0 0 120 32"
@@ -96,6 +123,149 @@ const updatedAt = date.toLocaleString('ru-RU', {
     </table>
   </div>
 </section>
+
+<script define:vars={{ clientItems }} type="module" is:inline>
+  function buildSparklinePath(values, w, h) {
+    if (!values || values.length === 0) return '';
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min || 1;
+    const stepX = w / (values.length - 1 || 1);
+    const padY = 2;
+    const innerH = h - padY * 2;
+    return values
+      .map((v, i) => {
+        const x = i * stepX;
+        const y = padY + (1 - (v - min) / range) * innerH;
+        return `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+      })
+      .join(' ');
+  }
+
+  function formatNumber(value, decimals) {
+    if (value === null || value === undefined || Number.isNaN(value)) return '—';
+    return value.toLocaleString('ru-RU', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+  }
+
+  function findValue(data, columns, name) {
+    const idx = columns.indexOf(name);
+    return idx >= 0 ? data[idx] : undefined;
+  }
+
+  function parseIssResponse(json) {
+    const md = json.marketdata || json.securities;
+    if (!md || !md.data || md.data.length === 0) return null;
+    const columns = md.columns || [];
+    const row = md.data[0];
+    const last =
+      findValue(row, columns, 'LAST') ??
+      findValue(row, columns, 'LCURRENTPRICE') ??
+      findValue(row, columns, 'MARKETPRICE') ??
+      findValue(row, columns, 'MARKETPRICETODAY') ??
+      findValue(row, columns, 'CURRENTVALUE') ??
+      findValue(row, columns, 'LASTVALUE');
+    const prev = findValue(row, columns, 'PREVPRICE') ?? findValue(row, columns, 'OPENVALUE');
+    const changePrc =
+      findValue(row, columns, 'LASTTOPREVPRICE') ??
+      findValue(row, columns, 'LASTCHANGEPRCNT') ??
+      findValue(row, columns, 'LASTCHANGETOOPENPRCNT');
+    return { last, prev, changePrc };
+  }
+
+  function parseHistoryResponse(json) {
+    const hist = json.history;
+    if (!hist || !hist.data) return [];
+    const columns = hist.columns || [];
+    const closeIdx = columns.indexOf('CLOSE');
+    const legalCloseIdx = columns.indexOf('LEGALCLOSEPRICE');
+    const idx = closeIdx >= 0 ? closeIdx : legalCloseIdx >= 0 ? legalCloseIdx : -1;
+    if (idx < 0) return [];
+    return hist.data.map((row) => row[idx]).filter((v) => v !== null && v !== undefined);
+  }
+
+  async function fetchQuote(item) {
+    const url = `https://iss.moex.com/iss/engines/${item.engine}/markets/${item.market}/securities/${item.secid}.json`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return parseIssResponse(await res.json());
+  }
+
+  async function fetchHistory(item) {
+    const till = new Date();
+    const from = new Date(till);
+    from.setDate(from.getDate() - 30);
+    const fmt = (d) => d.toISOString().split('T')[0];
+    const url = `https://iss.moex.com/iss/history/engines/${item.engine}/markets/${item.market}/securities/${item.secid}.json?from=${fmt(from)}&till=${fmt(till)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return parseHistoryResponse(await res.json());
+  }
+
+  async function updateRow(item) {
+    const row = document.querySelector(`tr[data-secid="${item.secid}"]`);
+    if (!row) return;
+
+    const [quote, history] = await Promise.all([fetchQuote(item), fetchHistory(item)]);
+    if (!quote) return;
+
+    const price = quote.last;
+    let changeValue = 0;
+    if (quote.changePrc !== null && quote.changePrc !== undefined) {
+      changeValue = Number(quote.changePrc);
+    } else if (quote.prev) {
+      changeValue = ((Number(price) - Number(quote.prev)) / Number(quote.prev)) * 100;
+    }
+
+    const positive = changeValue >= 0;
+    const sign = positive ? '+' : '';
+
+    const priceCell = row.querySelector('[data-field="price"]');
+    if (priceCell) {
+      const firstDiv = priceCell.querySelector('div');
+      if (firstDiv) firstDiv.textContent = formatNumber(Number(price), item.decimals);
+    }
+
+    const changeCell = row.querySelector('[data-field="change"]');
+    if (changeCell) {
+      changeCell.textContent = `${sign}${changeValue.toFixed(2)}%`;
+      changeCell.classList.remove('delta-up', 'delta-down');
+      changeCell.classList.add(positive ? 'delta-up' : 'delta-down');
+    }
+
+    const chartCell = row.querySelector('[data-field="chart"]');
+    if (chartCell && history.length > 1) {
+      const pathD = buildSparklinePath(history, 120, 32);
+      chartCell.innerHTML = `<svg viewBox="0 0 120 32" width="120" height="32" class="sparkline" preserveAspectRatio="none" aria-hidden="true"><path d="${pathD}" fill="none" stroke="var(--color-${positive ? 'positive' : 'negative'})" stroke-width="1.5" /></svg>`;
+    }
+  }
+
+  async function init() {
+    const updated = document.getElementById('market-updated');
+    const now = new Date();
+    const time = now.toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const results = await Promise.allSettled(clientItems.map(updateRow));
+    const failed = results.filter((r) => r.status === 'rejected').length;
+
+    if (updated) {
+      updated.textContent = failed === results.length
+        ? `Обновлено ${time} MSK · MOEX (данные отложены)`
+        : `Обновлено ${time} MSK · MOEX`;
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    init();
+  }
+</script>
 
 <style>
   .market-widget {
