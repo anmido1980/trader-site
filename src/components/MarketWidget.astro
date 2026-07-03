@@ -242,7 +242,7 @@ const clientItems = typedItems.map((item) => ({
     }
   }
 
-  async function init() {
+  async function refresh() {
     const updated = document.getElementById('market-updated');
     const now = new Date();
     const time = now.toLocaleString('ru-RU', {
@@ -263,7 +263,8 @@ const clientItems = typedItems.map((item) => ({
   }
 
   if (typeof window !== 'undefined') {
-    init();
+    refresh();
+    setInterval(refresh, 5 * 60 * 1000);
   }
 </script>
 
